@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" />
+    <title>Register</title>
+</head>
+<body>
+    <ul style="display: flex; justify-content: space-around; list-style: none;">
+        <li><a href="/">Home</a></li>
+        <li><a href="/users/login">Login</a></li>
+        <li><a href="/users/register">Register</a></li>
+        <li><a href="/users/dashboard">Dashboard</a></li>
+        <li><a href="/users/logout">Logout</a></li>
+    </ul>
+    <h1>Register</h1>
+    <ul>
+        <% if(typeof errors != "undefined") { %>
+            <% errors.forEach(error => { %>
+                <li><%= error.message %> </li>
+            <% }) %>
+        <% } %>
+    </ul>
+    
+    <form action="/users/register" method="post">
+        <div>
+            <input type="text" id="name" name="name" placeholder="enter your name">
+        </div>
+        <div>
+            <input type="email" id="email" name="email" placeholder="enter your email">
+        </div>
+        <div>
+            <input type="password" id="password" name="password" placeholder="enter your password">
+        </div>
+        <div>
+            <input type="password" id="password1" name="password1" placeholder="re-enter your password">
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+        <div>
+            <a href="/users/login">If Already Registered</a>
+        </div>
+        
+    </form>
+</body>
+</html>
