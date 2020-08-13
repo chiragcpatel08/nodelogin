@@ -9,7 +9,7 @@ const passport = require("passport");
 const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
-
+   
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true}));
 app.use(session({
@@ -19,17 +19,25 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static( __dirname + "/public"));
 app.use(flash());
+
+app.use(function(req, res, next){               // should be used just before first get request
+    res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success_msg");
+    next();
+    });
 
 app.get("/", (req, res) => {
     res.render("index");
 });
 
-app.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
+app.get("/users/dashboard", isLoggedIn, (req, res) => {
     res.render("dashboard", {user: req.user.name});
 });
 
-app.get("/users/register", checkAuthenticated, (req, res) => {
+app.get("/users/register", isNotLoggedIn, (req, res) => {
     res.render("register");
 });
 
@@ -46,7 +54,7 @@ app.post("/users/register", async (req, res) => {
     }   
 
     if(password.length < 5) {
-        errors.push({message: "Password should be atleast 6 character"})
+        errors.push({message: "Password should be atleast 5 characters"})
     }
 
     if(errors.length > 0) {
@@ -77,7 +85,7 @@ app.post("/users/register", async (req, res) => {
     }
 })
 
-app.get("/users/login", checkAuthenticated, (req, res) => {
+app.get("/users/login", isNotLoggedIn, (req, res) => {
     res.render("login");
 });
 
@@ -98,14 +106,14 @@ app.get("/users/logout", (req, res) => {
     res.redirect("/users/login");
 })
 
-function checkAuthenticated (req, res, next)  {
+function isNotLoggedIn (req, res, next)  {
     if (req.isAuthenticated()) {
         return res.redirect("/users/dashboard")
     }
     next()
 }
 
-function checkNotAuthenticated (req, res, next) {
+function isLoggedIn (req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
